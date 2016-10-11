@@ -36,6 +36,13 @@ import Data.Char
 import Data.Maybe
 import Data.Word ( Word8 )
 
+#ifdef MIN_VERSION_network
+#define USE_MODERN_RELATIVETO MIN_VERSION_network(2,4,0)
+#endif
+#ifdef MIN_VERSION_network_hans
+#define USE_MODERN_RELATIVETO MIN_VERSION_network_hans(2,4,0)
+#endif
+
 -- | @Authority@ specifies the HTTP Authentication method to use for
 -- a given domain/realm; @Basic@ or @Digest@.
 data Authority 
@@ -190,7 +197,7 @@ headerToChallenge baseURI (Header _ str) =
                }
 
         annotateURIs :: [Maybe URI] -> [URI]
-#if MIN_VERSION_network(2,4,0)
+#if USE_MODERN_RELATIVETO
         annotateURIs = map (`relativeTo` baseURI) . catMaybes
 #else
         annotateURIs = (map (\u -> fromMaybe u (u `relativeTo` baseURI))) . catMaybes

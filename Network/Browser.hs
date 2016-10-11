@@ -151,6 +151,12 @@ import qualified System.IO
    )
 import Data.Time.Clock ( UTCTime, getCurrentTime )
 
+#ifdef MIN_VERSION_network
+#define USE_MODERN_RELATIVETO MIN_VERSION_network(2,4,0)
+#endif
+#ifdef MIN_VERSION_network_hans
+#define USE_MODERN_RELATIVETO MIN_VERSION_network_hans(2,4,0)
+#endif
 
 ------------------------------------------------------------------
 ----------------------- Cookie Stuff -----------------------------
@@ -1058,7 +1064,7 @@ supportedScheme u = uriScheme u == "http:"
 -- If the second argument is not sufficient context for determining
 -- a full URI then anarchy reins.
 uriDefaultTo :: URI -> URI -> URI
-#if MIN_VERSION_network(2,4,0)
+#if USE_MODERN_RELATIVETO
 uriDefaultTo a b = a `relativeTo` b
 #else
 uriDefaultTo a b = maybe a id (a `relativeTo` b)
